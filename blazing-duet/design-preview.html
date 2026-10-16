@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenCode Data Engine — Design System Preview & OpenCode Data Engine</title>
+
+    <!-- Typography: IBM Plex Mono & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS v4 Browser CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- Tailwind CSS v4 CSS-First Configuration -->
+    <style type="text/tailwindcss">
+      @import "tailwindcss";
+
+      /* Class-based dark mode selector */
+      @custom-variant dark (&:where(.dark, .dark *));
+
+      /* Default Root CSS Variables (OpenCode Data Archetype) */
+      :root {
+        --color-background: #ffffff;
+        --color-foreground: #161616;
+        --color-surface: #fafafa;
+        --color-surface-elevated: #eeeeee;
+
+        --color-muted: #f4f4f5;
+        --color-muted-foreground: #707070;
+        --color-border: rgba(0, 0, 0, 0.1);
+        --color-border-subtle: rgba(0, 0, 0, 0.05);
+
+        --color-primary: #3b5cf6;
+        --color-primary-foreground: #ffffff;
+        --color-primary-hover: #2563eb;
+        --color-ring: #3b5cf6;
+
+        --color-success: #10b981;
+        --color-success-foreground: #ffffff;
+        --color-warning: #f59e0b;
+        --color-warning-foreground: #ffffff;
+        --color-destructive: #ef4444;
+        --color-destructive-foreground: #ffffff;
+        --color-info: #0ea5e9;
+        --color-info-foreground: #ffffff;
+
+        --radius-card: 8px;
+        --radius-input: 6px;
+      }
+
+      .dark {
+        --color-background: #161616;
+        --color-foreground: #ffffff;
+        --color-surface: #242424;
+        --color-surface-elevated: #303030;
+
+        --color-muted: #3a3a3a;
+        --color-muted-foreground: #a3a3a3;
+        --color-border: rgba(255, 255, 255, 0.1);
+        --color-border-subtle: rgba(255, 255, 255, 0.06);
+
+        --color-primary: #8190ff;
+        --color-primary-foreground: #ffffff;
+        --color-primary-hover: #6c7dfa;
+        --color-ring: #8190ff;
+
+        --color-success: #10b981;
+        --color-success-foreground: #ffffff;
+        --color-warning: #f59e0b;
+        --color-warning-foreground: #ffffff;
+        --color-destructive: #ef4444;
+        --color-destructive-foreground: #ffffff;
+        --color-info: #38bdf8;
+        --color-info-foreground: #ffffff;
+      }
+
+      /* Map CSS variables to Tailwind v4 @theme */
+      @theme {
+        --color-background: var(--color-background);
+        --color-foreground: var(--color-foreground);
+        --color-surface: var(--color-surface);
+        --color-surface-elevated: var(--color-surface-elevated);
+
+        --color-muted: var(--color-muted);
+        --color-muted-foreground: var(--color-muted-foreground);
+        --color-border: var(--color-border);
+        --color-border-subtle: var(--color-border-subtle);
+
+        --color-primary: var(--color-primary);
+        --color-primary-foreground: var(--color-primary-foreground);
+        --color-primary-hover: var(--color-primary-hover);
+        --color-ring: var(--color-ring);
+
+        --color-success: var(--color-success);
+        --color-success-foreground: var(--color-success-foreground);
+        --color-warning: var(--color-warning);
+        --color-warning-foreground: var(--color-warning-foreground);
+        --color-destructive: var(--color-destructive);
+        --color-destructive-foreground: var(--color-destructive-foreground);
+        --color-info: var(--color-info);
+        --color-info-foreground: var(--color-info-foreground);
+
+        --radius-card: var(--radius-card);
+        --radius-input: var(--radius-input);
+
+        --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+        --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-background text-foreground font-sans min-h-screen antialiased transition-colors duration-200 selection:bg-primary/20 selection:text-primary">
+    
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 w-full border-b border-border bg-surface/90 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        
+        <!-- Brand & Archetype Badge -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-mono font-bold text-sm shadow-sm">
+            OD
+          </div>
+          <div>
+            <h1 class="text-sm font-semibold tracking-tight text-foreground flex items-center gap-2 font-mono">
+              <span>OpenCode Data Engine</span>
+              <span id="currentArchetypeBadge" class="px-2 py-0.5 text-[10px] uppercase font-mono font-semibold rounded-full bg-primary/15 text-primary border border-primary/25">
+                OpenCode Data (Monospace)
+              </span>
+            </h1>
+            <p class="text-xs text-muted-foreground font-mono">Tailwind CSS v4 Browser Architecture</p>
+          </div>
+        </div>
+
+        <!-- Controls: Archetype Switcher, Theme Toggle, WCAG -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Live Archetype Switcher Dropdown -->
+          <div class="relative inline-block text-left">
+            <select id="archetypeSelect" class="text-xs font-mono bg-surface-elevated border border-border text-foreground rounded-input px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer">
+              <option value="opencode-data" selected>OpenCode Data (Monospace)</option>
+              <option value="linear-dark">Linear / SaaS Dark</option>
+              <option value="ultra-minimal">Ultra-Minimalist</option>
+              <option value="modern-clean">Modern Clean Enterprise</option>
+              <option value="fintech-terminal">Fintech Terminal</option>
+              <option value="editorial">Editorial Minimal</option>
+            </select>
+          </div>
+
+          <!-- Theme Toggle Button -->
+          <button
+            id="themeToggleBtn"
+            type="button"
+            class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-input bg-surface border border-border text-foreground text-xs font-mono hover:bg-muted active:scale-[0.98] transition-all cursor-pointer"
+          >
+            <svg id="moonIcon" class="w-3.5 h-3.5 text-foreground hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <svg id="sunIcon" class="w-3.5 h-3.5 text-foreground hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <span id="themeToggleText">Theme</span>
+          </button>
+
+          <!-- WCAG Badge -->
+          <span class="hidden sm:inline-flex text-[11px] font-mono text-emerald-500 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-input border border-emerald-500/20">
+            WCAG 2.1 AA PASS
+          </span>
+
+          <!-- Copy Blueprint Drawer Button -->
+          <button id="openExportBtn" class="px-3 py-1.5 rounded-input bg-primary text-primary-foreground text-xs font-mono font-medium hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-xs">
+            Export Code
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+      <!-- SECTION 1: OpenCode Data Showcase (Telemetry, Leaderboards & Data Tables) -->
+      <section class="space-y-6">
+        <div class="border-b border-border pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-3">
+              <h2 class="text-xl font-bold font-mono tracking-tight text-foreground">
+                1. OpenCode Data Telemetry Engine
+              </h2>
+              <span class="px-2 py-0.5 text-[10px] font-mono font-semibold uppercase bg-indigo-500/15 text-primary border border-primary/20 rounded">
+                Live Data Feed
+              </span>
+            </div>
+            <p class="text-xs font-mono text-muted-foreground mt-1">
+              Extracted from opencode.ai/data: IBM Plex Mono typography, hairline 0.5px borders, and high-density telemetry.
+            </p>
+          </div>
+
+          <!-- Real-Time Status Ticker -->
+          <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-border bg-surface text-xs font-mono text-muted-foreground self-start sm:self-auto">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Live Telemetry · Oct 17, 01:33 AM GMT+8</span>
+          </div>
+        </div>
+
+        <!-- Metric KPI Cards Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="p-4 rounded-card bg-surface border border-border space-y-1 shadow-sm">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">7D Volume</span>
+            <div class="text-2xl font-bold font-mono tabular-nums text-foreground">248.6T</div>
+            <div class="text-[11px] font-mono text-emerald-500 font-medium flex items-center gap-1">
+              <span>↑ +21.4%</span>
+              <span class="text-muted-foreground">vs last week</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-card bg-surface border border-border space-y-1 shadow-sm">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Active Models</span>
+            <div class="text-2xl font-bold font-mono tabular-nums text-foreground">42</div>
+            <div class="text-[11px] font-mono text-primary font-medium flex items-center gap-1">
+              <span>4 new labs</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-card bg-surface border border-border space-y-1 shadow-sm">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Avg Cost / 1M</span>
+            <div class="text-2xl font-bold font-mono tabular-nums text-foreground">$0.28</div>
+            <div class="text-[11px] font-mono text-emerald-500 font-medium flex items-center gap-1">
+              <span>↓ -8.2%</span>
+              <span class="text-muted-foreground">efficiency</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-card bg-surface border border-border space-y-1 shadow-sm">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Cache Ratio</span>
+            <div class="text-2xl font-bold font-mono tabular-nums text-foreground">81.4%</div>
+            <div class="text-[11px] font-mono text-primary font-medium flex items-center gap-1">
+              <span>99.2% prompt hits</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaderboard Ranking Cards Row -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold font-mono text-foreground uppercase tracking-wider">
+              Top Models Leaderboard
+            </h3>
+            
+            <!-- Segmented Filter Control -->
+            <div class="inline-flex p-0.5 rounded-input bg-surface border border-border gap-0.5 font-mono text-xs">
+              <button class="px-2.5 py-1 rounded-input bg-surface-elevated text-foreground font-medium border border-border shadow-2xs">
+                7D
+              </button>
+              <button class="px-2.5 py-1 rounded-input text-muted-foreground hover:text-foreground transition-colors">
+                30D
+              </button>
+              <button class="px-2.5 py-1 rounded-input text-muted-foreground hover:text-foreground transition-colors">
+                All
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- Card 1: DeepSeek -->
+            <div class="group relative p-5 rounded-card bg-surface hover:bg-surface-elevated border border-border hover:border-border/80 transition-all cursor-pointer overflow-hidden shadow-sm">
+              <span class="absolute -right-2 -bottom-4 text-7xl font-mono font-bold text-foreground/[0.03] group-hover:text-foreground/[0.08] transition-colors pointer-events-none select-none">
+                #01
+              </span>
+              <div class="flex items-start justify-between relative z-10">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 text-[10px] font-mono font-semibold uppercase bg-primary/15 text-primary border border-primary/25 rounded">
+                      DEEPSEEK
+                    </span>
+                    <span class="text-xs font-mono text-muted-foreground">v4.1 Flash</span>
+                  </div>
+                  <h4 class="mt-2 text-base font-semibold font-mono text-foreground group-hover:text-primary transition-colors">
+                    deepseek-v4.1-flash
+                  </h4>
+                </div>
+                <span class="text-xs font-mono text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  +18.4%
+                </span>
+              </div>
+              <div class="mt-4 pt-4 border-t border-border flex items-center justify-between text-xs font-mono relative z-10">
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground block">7D Volume</span>
+                  <span class="text-base font-bold tabular-nums text-foreground">66.4T</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground block">Share</span>
+                  <span class="text-sm font-semibold tabular-nums text-primary">31.2%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Muse Spark -->
+            <div class="group relative p-5 rounded-card bg-surface hover:bg-surface-elevated border border-border hover:border-border/80 transition-all cursor-pointer overflow-hidden shadow-sm">
+              <span class="absolute -right-2 -bottom-4 text-7xl font-mono font-bold text-foreground/[0.03] group-hover:text-foreground/[0.08] transition-colors pointer-events-none select-none">
+                #02
+              </span>
+              <div class="flex items-start justify-between relative z-10">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 text-[10px] font-mono font-semibold uppercase bg-sky-500/15 text-sky-500 border border-sky-500/25 rounded">
+                      MUSE
+                    </span>
+                    <span class="text-xs font-mono text-muted-foreground">1.3 Contributor</span>
+                  </div>
+                  <h4 class="mt-2 text-base font-semibold font-mono text-foreground group-hover:text-primary transition-colors">
+                    muse-spark-1.3
+                  </h4>
+                </div>
+                <span class="text-xs font-mono text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  +12.1%
+                </span>
+              </div>
+              <div class="mt-4 pt-4 border-t border-border flex items-center justify-between text-xs font-mono relative z-10">
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground block">7D Volume</span>
+                  <span class="text-base font-bold tabular-nums text-foreground">39.1T</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground block">Share</span>
+                  <span class="text-sm font-semibold tabular-nums text-primary">18.7%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Space Bunny -->
+            <div class="group relative p-5 rounded-card bg-surface hover:bg-surface-elevated border border-border hover:border-border/80 transition-all cursor-pointer overflow-hidden shadow-sm">
+              <span class="absolute -right-2 -bottom-4 text-7xl font-mono font-bold text-foreground/[0.03] group-hover:text-foreground/[0.08] transition-colors pointer-events-none select-none">
+                #03
+              </span>
+              <div class="flex items-start justify-between relative z-10">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 text-[10px] font-mono font-semibold uppercase bg-amber-500/15 text-amber-500 border border-amber-500/25 rounded">
+                      SPACE
+                    </span>
+                    <span class="text-xs font-mono text-muted-foreground">Bunny v2</span>
+                  </div>
+                  <h4 class="mt-2 text-base font-semibold font-mono text-foreground group-hover:text-primary transition-colors">
+                    space-bunny-2.0
+                  </h4>
+                </div>
+                <span class="text-xs font-mono text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  +8.9%
+                </span>
+              </div>
+              <div class="mt-4 pt-4 border-t border-border flex items-center justify-between text-xs font-mono relative z-10">
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground block">7D Volume</span>
+                  <span class="text-base font-bold tabular-nums text-foreground">20.4T</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground block">Share</span>
+                  <span class="text-sm font-semibold tabular-nums text-primary">9.8%</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- High-Density Lab Model Table -->
+        <div class="w-full overflow-x-auto border border-border bg-surface rounded-card shadow-sm">
+          <table class="w-full text-left font-mono text-xs border-collapse">
+            <thead class="bg-background/80 text-muted-foreground uppercase text-[10px] tracking-wider border-b border-border">
+              <tr>
+                <th class="py-3 px-4 font-semibold">Rank & Model Spec</th>
+                <th class="py-3 px-4 font-semibold text-right">Tokens (7D)</th>
+                <th class="py-3 px-4 font-semibold text-right">Market Share</th>
+                <th class="py-3 px-4 font-semibold text-right">Avg Cost / 1M</th>
+                <th class="py-3 px-4 font-semibold text-right">Cache Hit Ratio</th>
+                <th class="py-3 px-4 font-semibold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border text-foreground">
+              
+              <tr class="hover:bg-surface-elevated transition-colors group cursor-pointer">
+                <td class="py-3.5 px-4 font-medium flex items-center gap-3">
+                  <span class="text-muted-foreground w-4">01</span>
+                  <div>
+                    <span class="group-hover:text-primary transition-colors font-semibold">deepseek-v4.1-flash</span>
+                    <span class="block text-[10px] text-muted-foreground">DeepSeek AI · 128K context</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-right font-semibold tabular-nums">66.4T</td>
+                <td class="py-3.5 px-4 text-right tabular-nums text-primary font-semibold">31.2%</td>
+                <td class="py-3.5 px-4 text-right tabular-nums text-muted-foreground">$0.14</td>
+                <td class="py-3.5 px-4 text-right tabular-nums">
+                  <div class="inline-flex items-center gap-2 justify-end">
+                    <span>78%</span>
+                    <div class="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div class="h-full bg-primary rounded-full" style="width: 78%"></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                </td>
+              </tr>
+
+              <tr class="hover:bg-surface-elevated transition-colors group cursor-pointer">
+                <td class="py-3.5 px-4 font-medium flex items-center gap-3">
+                  <span class="text-muted-foreground w-4">02</span>
+                  <div>
+                    <span class="group-hover:text-primary transition-colors font-semibold">muse-spark-1.3</span>
+                    <span class="block text-[10px] text-muted-foreground">Muse Systems · 64K context</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-right font-semibold tabular-nums">39.1T</td>
+                <td class="py-3.5 px-4 text-right tabular-nums text-primary font-semibold">18.7%</td>
+                <td class="py-3.5 px-4 text-right tabular-nums text-muted-foreground">$0.22</td>
+                <td class="py-3.5 px-4 text-right tabular-nums">
+                  <div class="inline-flex items-center gap-2 justify-end">
+                    <span>84%</span>
+                    <div class="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div class="h-full bg-primary rounded-full" style="width: 84%"></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                </td>
+              </tr>
+
+              <tr class="hover:bg-surface-elevated transition-colors group cursor-pointer">
+                <td class="py-3.5 px-4 font-medium flex items-center gap-3">
+                  <span class="text-muted-foreground w-4">03</span>
+                  <div>
+                    <span class="group-hover:text-primary transition-colors font-semibold">space-bunny-2.0</span>
+                    <span class="block text-[10px] text-muted-foreground">OpenLab · 32K context</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-right font-semibold tabular-nums">20.4T</td>
+                <td class="py-3.5 px-4 text-right tabular-nums text-primary font-semibold">9.8%</td>
+                <td class="py-3.5 px-4 text-right tabular-nums text-muted-foreground">$0.09</td>
+                <td class="py-3.5 px-4 text-right tabular-nums">
+                  <div class="inline-flex items-center gap-2 justify-end">
+                    <span>91%</span>
+                    <div class="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div class="h-full bg-primary rounded-full" style="width: 91%"></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Stacked Usage Sparkline Bar -->
+        <div class="p-5 rounded-card bg-surface border border-border space-y-3 shadow-sm">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="font-semibold text-foreground">7-Day Usage Trajectory</span>
+            <span class="text-muted-foreground">Interactive Timeline</span>
+          </div>
+          <div class="flex items-end gap-1.5 h-16 w-full pt-2">
+            <div class="flex-1 bg-muted hover:bg-primary transition-colors rounded-xs h-[35%]" title="Day 1: 13T"></div>
+            <div class="flex-1 bg-muted hover:bg-primary transition-colors rounded-xs h-[45%]" title="Day 2: 15T"></div>
+            <div class="flex-1 bg-muted hover:bg-primary transition-colors rounded-xs h-[60%]" title="Day 3: 19T"></div>
+            <div class="flex-1 bg-muted hover:bg-primary transition-colors rounded-xs h-[52%]" title="Day 4: 18T"></div>
+            <div class="flex-1 bg-muted hover:bg-primary transition-colors rounded-xs h-[48%]" title="Day 5: 16T"></div>
+            <div class="flex-1 bg-muted hover:bg-primary transition-colors rounded-xs h-[75%]" title="Day 6: 22T"></div>
+            <div class="flex-1 bg-primary rounded-xs h-[95%]" title="Today: 66.4T"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: 60-30-10 Semantic Color System & WCAG Contrast Matrix -->
+      <section class="space-y-6">
+        <div class="border-b border-border pb-3 flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold font-mono tracking-tight text-foreground">
+              2. Semantic Color Palette & Contrast Validation
+            </h2>
+            <p class="text-xs font-mono text-muted-foreground">
+              Mapped to 60-30-10 distribution and WCAG 2.1 AA mathematical standards
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- 60% Dominant -->
+          <div class="p-4 rounded-card bg-surface border border-border space-y-3 shadow-sm">
+            <div class="flex items-center justify-between font-mono">
+              <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">60% Dominant</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Canvas</span>
+            </div>
+            <div class="space-y-2">
+              <div class="h-11 rounded-input bg-background border border-border flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-foreground font-medium">background</span>
+                <span class="text-[10px] font-mono text-muted-foreground">bg-background</span>
+              </div>
+              <div class="h-11 rounded-input bg-surface border border-border flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-foreground font-medium">surface</span>
+                <span class="text-[10px] font-mono text-muted-foreground">bg-surface</span>
+              </div>
+              <div class="h-11 rounded-input bg-surface-elevated border border-border flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-foreground font-medium">surface-elevated</span>
+                <span class="text-[10px] font-mono text-muted-foreground">bg-surface-elevated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 30% Secondary -->
+          <div class="p-4 rounded-card bg-surface border border-border space-y-3 shadow-sm">
+            <div class="flex items-center justify-between font-mono">
+              <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">30% Secondary</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Structure</span>
+            </div>
+            <div class="space-y-2">
+              <div class="h-11 rounded-input bg-muted border border-border flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-foreground font-medium">muted</span>
+                <span class="text-[10px] font-mono text-muted-foreground">bg-muted</span>
+              </div>
+              <div class="h-11 rounded-input bg-surface border border-border flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-muted-foreground font-medium">muted-fg</span>
+                <span class="text-[10px] font-mono text-muted-foreground">text-muted-foreground</span>
+              </div>
+              <div class="h-11 rounded-input bg-surface border-2 border-border flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-foreground font-medium">border</span>
+                <span class="text-[10px] font-mono text-muted-foreground">border-border</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10% Accent -->
+          <div class="p-4 rounded-card bg-surface border border-border space-y-3 shadow-sm">
+            <div class="flex items-center justify-between font-mono">
+              <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">10% Accent</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Actions</span>
+            </div>
+            <div class="space-y-2">
+              <div class="h-11 rounded-input bg-primary flex items-center justify-between px-3 text-primary-foreground font-medium">
+                <span class="text-xs font-mono">primary</span>
+                <span class="text-[10px] font-mono">bg-primary</span>
+              </div>
+              <div class="h-11 rounded-input bg-primary-hover flex items-center justify-between px-3 text-primary-foreground font-medium">
+                <span class="text-xs font-mono">primary-hover</span>
+                <span class="text-[10px] font-mono">hover state</span>
+              </div>
+              <div class="h-11 rounded-input bg-surface border-2 border-ring flex items-center justify-between px-3">
+                <span class="text-xs font-mono text-foreground font-medium">ring</span>
+                <span class="text-[10px] font-mono text-muted-foreground">ring-ring</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Functional States -->
+          <div class="p-4 rounded-card bg-surface border border-border space-y-3 shadow-sm">
+            <div class="flex items-center justify-between font-mono">
+              <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Functional</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Feedback</span>
+            </div>
+            <div class="space-y-2">
+              <div class="h-8 rounded-input bg-success/20 text-success border border-success/30 flex items-center justify-between px-3 text-xs font-mono">
+                <span>success</span>
+                <span class="text-[10px]">bg-success</span>
+              </div>
+              <div class="h-8 rounded-input bg-warning/20 text-warning border border-warning/30 flex items-center justify-between px-3 text-xs font-mono">
+                <span>warning</span>
+                <span class="text-[10px]">bg-warning</span>
+              </div>
+              <div class="h-8 rounded-input bg-destructive/20 text-destructive border border-destructive/30 flex items-center justify-between px-3 text-xs font-mono">
+                <span>destructive</span>
+                <span class="text-[10px]">bg-destructive</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 3: Component Blueprint Playground -->
+      <section class="space-y-6">
+        <div class="border-b border-border pb-3 flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold font-mono tracking-tight text-foreground">
+              3. Interactive Component Playground
+            </h2>
+            <p class="text-xs font-mono text-muted-foreground">
+              Standard semantic utility recipes ready to drop into production
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- Buttons Matrix -->
+          <div class="p-6 rounded-card bg-surface border border-border space-y-4 shadow-sm">
+            <h3 class="text-sm font-semibold font-mono text-foreground uppercase tracking-wider">
+              Buttons & Action Controls
+            </h3>
+            <div class="flex flex-wrap gap-3">
+              <button class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-input bg-primary text-primary-foreground text-xs font-mono font-medium shadow-sm hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all cursor-pointer">
+                Primary Action
+              </button>
+              <button class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-input bg-surface-elevated border border-border text-foreground text-xs font-mono font-medium shadow-sm hover:bg-muted active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all cursor-pointer">
+                Secondary
+              </button>
+              <button class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-input text-muted-foreground hover:text-foreground hover:bg-muted text-xs font-mono font-medium transition-colors cursor-pointer">
+                Ghost Link
+              </button>
+              <button class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-input bg-destructive text-destructive-foreground text-xs font-mono font-medium shadow-sm hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer">
+                Destructive
+              </button>
+            </div>
+
+            <!-- Badges & Status Pills -->
+            <div class="pt-4 border-t border-border space-y-2">
+              <span class="text-xs font-mono uppercase text-muted-foreground block">Status Pills</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-primary/10 text-primary border border-primary/20">
+                  Accent
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-success/15 text-success border border-success/30">
+                  Online
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-warning/15 text-warning border border-warning/30">
+                  Pending
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-destructive/15 text-destructive border border-destructive/30">
+                  Error
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Controls -->
+          <div class="p-6 rounded-card bg-surface border border-border space-y-4 shadow-sm">
+            <h3 class="text-sm font-semibold font-mono text-foreground uppercase tracking-wider">
+              Inputs & Form Controls
+            </h3>
+            
+            <div class="space-y-3 font-mono">
+              <div>
+                <label class="block text-xs text-muted-foreground mb-1">Standard Monospace Input</label>
+                <input
+                  type="text"
+                  placeholder="Enter model identifier..."
+                  class="w-full px-3.5 py-2 rounded-input bg-background border border-border text-foreground text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs text-muted-foreground mb-1">Search with Key Shortcut</label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    placeholder="Search models, tags, tokens..."
+                    class="w-full pl-8 pr-12 py-2 rounded-input bg-background border border-border text-foreground text-xs placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+                  />
+                  <span class="absolute right-2.5 top-2 text-[10px] text-muted-foreground px-1.5 py-0.5 bg-muted rounded border border-border">
+                    ⌘K
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2">
+                <span class="text-xs text-foreground">Real-time Stream Updates</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked class="sr-only peer" />
+                  <div class="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Code Export Modal / Slide-over Drawer -->
+    <div id="exportDrawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex justify-end hidden">
+      <div class="w-full max-w-xl bg-surface-elevated border-l border-border h-full p-6 flex flex-col justify-between shadow-2xl font-mono text-xs">
+        <div>
+          <div class="flex items-center justify-between pb-4 border-b border-border">
+            <h3 class="text-sm font-semibold text-foreground">Tailwind CSS v4 CDN HTML Snippet</h3>
+            <button id="closeExportBtn" class="text-muted-foreground hover:text-foreground text-lg leading-none cursor-pointer">×</button>
+          </div>
+          <p class="text-xs text-muted-foreground my-3">
+            Copy and paste this snippet directly into your index.html &lt;head&gt; to replicate this design system instantly.
+          </p>
+          <pre id="snippetCode" class="p-4 rounded-input bg-background border border-border overflow-x-auto text-[11px] text-foreground h-96 select-all"></pre>
+        </div>
+        <div class="pt-4 border-t border-border flex justify-end gap-3">
+          <button id="copySnippetBtn" class="px-4 py-2 rounded-input bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all cursor-pointer">
+            Copy to Clipboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Archetype & Theme Script -->
+    <script>
+      // Archetypes Token Catalog
+      const ARCHETYPES = {
+        'opencode-data': {
+          name: 'OpenCode Data (Monospace)',
+          light: { bg: '#ffffff', fg: '#161616', surface: '#fafafa', surfaceElev: '#eeeeee', muted: '#f4f4f5', mutedFg: '#707070', border: 'rgba(0,0,0,0.1)', borderSubtle: 'rgba(0,0,0,0.05)', primary: '#3b5cf6', primaryFg: '#ffffff', ring: '#3b5cf6', cardR: '8px', inputR: '6px' },
+          dark: { bg: '#161616', fg: '#ffffff', surface: '#242424', surfaceElev: '#303030', muted: '#3a3a3a', mutedFg: '#a3a3a3', border: 'rgba(255,255,255,0.1)', borderSubtle: 'rgba(255,255,255,0.06)', primary: '#8190ff', primaryFg: '#ffffff', ring: '#8190ff', cardR: '8px', inputR: '6px' }
+        },
+        'linear-dark': {
+          name: 'Linear / SaaS Dark',
+          light: { bg: '#ffffff', fg: '#09090b', surface: '#fafafa', surfaceElev: '#f4f4f5', muted: '#f4f4f5', mutedFg: '#71717a', border: 'rgba(0,0,0,0.08)', borderSubtle: 'rgba(0,0,0,0.04)', primary: '#7c3aed', primaryFg: '#ffffff', ring: '#7c3aed', cardR: '12px', inputR: '8px' },
+          dark: { bg: '#08090a', fg: '#ffffff', surface: '#121316', surfaceElev: '#1a1c20', muted: '#222429', mutedFg: '#a1a1aa', border: 'rgba(255,255,255,0.1)', borderSubtle: 'rgba(255,255,255,0.05)', primary: '#8b5cf6', primaryFg: '#ffffff', ring: '#8b5cf6', cardR: '12px', inputR: '8px' }
+        },
+        'ultra-minimal': {
+          name: 'Ultra-Minimalist',
+          light: { bg: '#ffffff', fg: '#18181b', surface: '#ffffff', surfaceElev: '#f4f4f5', muted: '#f4f4f5', mutedFg: '#71717a', border: '#e4e4e7', borderSubtle: '#f4f4f5', primary: '#18181b', primaryFg: '#ffffff', ring: '#18181b', cardR: '16px', inputR: '12px' },
+          dark: { bg: '#09090b', fg: '#fafafa', surface: '#09090b', surfaceElev: '#18181b', muted: '#27272a', mutedFg: '#a1a1aa', border: '#27272a', borderSubtle: '#18181b', primary: '#fafafa', primaryFg: '#09090b', ring: '#fafafa', cardR: '16px', inputR: '12px' }
+        },
+        'modern-clean': {
+          name: 'Modern Clean Enterprise',
+          light: { bg: '#f8fafc', fg: '#0f172a', surface: '#ffffff', surfaceElev: '#f1f5f9', muted: '#f1f5f9', mutedFg: '#64748b', border: '#e2e8f0', borderSubtle: '#f1f5f9', primary: '#2563eb', primaryFg: '#ffffff', ring: '#2563eb', cardR: '12px', inputR: '8px' },
+          dark: { bg: '#0f172a', fg: '#f8fafc', surface: '#1e293b', surfaceElev: '#334155', muted: '#334155', mutedFg: '#94a3b8', border: '#334155', borderSubtle: '#1e293b', primary: '#3b82f6', primaryFg: '#ffffff', ring: '#3b82f6', cardR: '12px', inputR: '8px' }
+        },
+        'fintech-terminal': {
+          name: 'Fintech Terminal',
+          light: { bg: '#f4f5f7', fg: '#172b4d', surface: '#ffffff', surfaceElev: '#ebecf0', muted: '#ebecf0', mutedFg: '#6b778c', border: '#dfe1e6', borderSubtle: '#ebecf0', primary: '#0052cc', primaryFg: '#ffffff', ring: '#0052cc', cardR: '4px', inputR: '3px' },
+          dark: { bg: '#0d1117', fg: '#c9d1d9', surface: '#161b22', surfaceElev: '#21262d', muted: '#21262d', mutedFg: '#8b949e', border: '#30363d', borderSubtle: '#21262d', primary: '#10b981', primaryFg: '#ffffff', ring: '#10b981', cardR: '4px', inputR: '3px' }
+        },
+        'editorial': {
+          name: 'Editorial Minimal',
+          light: { bg: '#fbfbfa', fg: '#27272a', surface: '#ffffff', surfaceElev: '#f4f4f2', muted: '#f4f4f2', mutedFg: '#71717a', border: '#e5e5e0', borderSubtle: '#f4f4f2', primary: '#c2410c', primaryFg: '#ffffff', ring: '#c2410c', cardR: '8px', inputR: '6px' },
+          dark: { bg: '#18181b', fg: '#f4f4f5', surface: '#27272a', surfaceElev: '#3f3f46', muted: '#3f3f46', mutedFg: '#a1a1aa', border: '#3f3f46', borderSubtle: '#27272a', primary: '#fb923c', primaryFg: '#18181b', ring: '#fb923c', cardR: '8px', inputR: '6px' }
+        }
+      };
+
+      // Theme toggle logic
+      const htmlEl = document.documentElement;
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      const moonIcon = document.getElementById('moonIcon');
+      const sunIcon = document.getElementById('sunIcon');
+      const themeToggleText = document.getElementById('themeToggleText');
+      const archetypeSelect = document.getElementById('archetypeSelect');
+      const currentArchetypeBadge = document.getElementById('currentArchetypeBadge');
+
+      function updateThemeIcons() {
+        const isDark = htmlEl.classList.contains('dark');
+        if (isDark) {
+          moonIcon.classList.add('hidden');
+          sunIcon.classList.remove('hidden');
+          themeToggleText.textContent = 'Light';
+        } else {
+          moonIcon.classList.remove('hidden');
+          sunIcon.classList.add('hidden');
+          themeToggleText.textContent = 'Dark';
+        }
+      }
+
+      function applyArchetype(key) {
+        const arch = ARCHETYPES[key] || ARCHETYPES['opencode-data'];
+        currentArchetypeBadge.textContent = arch.name;
+
+        // Apply tokens dynamically to custom stylesheet
+        let dynStyle = document.getElementById('dynamicArchetypeStyle');
+        if (!dynStyle) {
+          dynStyle = document.createElement('style');
+          dynStyle.id = 'dynamicArchetypeStyle';
+          document.head.appendChild(dynStyle);
+        }
+
+        dynStyle.textContent = `
+          :root {
+            --color-background: ${arch.light.bg};
+            --color-foreground: ${arch.light.fg};
+            --color-surface: ${arch.light.surface};
+            --color-surface-elevated: ${arch.light.surfaceElev};
+            --color-muted: ${arch.light.muted};
+            --color-muted-foreground: ${arch.light.mutedFg};
+            --color-border: ${arch.light.border};
+            --color-border-subtle: ${arch.light.borderSubtle};
+            --color-primary: ${arch.light.primary};
+            --color-primary-foreground: ${arch.light.primaryFg};
+            --color-ring: ${arch.light.ring};
+            --radius-card: ${arch.light.cardR};
+            --radius-input: ${arch.light.inputR};
+          }
+          :root.dark, .dark {
+            --color-background: ${arch.dark.bg};
+            --color-foreground: ${arch.dark.fg};
+            --color-surface: ${arch.dark.surface};
+            --color-surface-elevated: ${arch.dark.surfaceElev};
+            --color-muted: ${arch.dark.muted};
+            --color-muted-foreground: ${arch.dark.mutedFg};
+            --color-border: ${arch.dark.border};
+            --color-border-subtle: ${arch.dark.borderSubtle};
+            --color-primary: ${arch.dark.primary};
+            --color-primary-foreground: ${arch.dark.primaryFg};
+            --color-ring: ${arch.dark.ring};
+            --radius-card: ${arch.dark.cardR};
+            --radius-input: ${arch.dark.inputR};
+          }
+        `;
+        updateExportSnippet(key);
+      }
+
+      themeToggleBtn.addEventListener('click', () => {
+        htmlEl.classList.toggle('dark');
+        const isDark = htmlEl.classList.contains('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeIcons();
+      });
+
+      archetypeSelect.addEventListener('change', (e) => {
+        applyArchetype(e.target.value);
+      });
+
+      // Export Drawer Logic
+      const exportDrawer = document.getElementById('exportDrawer');
+      const openExportBtn = document.getElementById('openExportBtn');
+      const closeExportBtn = document.getElementById('closeExportBtn');
+      const copySnippetBtn = document.getElementById('copySnippetBtn');
+      const snippetCode = document.getElementById('snippetCode');
+
+      function updateExportSnippet(key) {
+        const arch = ARCHETYPES[key] || ARCHETYPES['opencode-data'];
+        snippetCode.textContent = `<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>
+
+<style type="text/tailwindcss">
+  @import "tailwindcss";
+  @custom-variant dark (&:where(.dark, .dark *));
+
+  :root {
+    --color-background: ${arch.light.bg};
+    --color-foreground: ${arch.light.fg};
+    --color-surface: ${arch.light.surface};
+    --color-surface-elevated: ${arch.light.surfaceElev};
+    --color-muted: ${arch.light.muted};
+    --color-muted-foreground: ${arch.light.mutedFg};
+    --color-border: ${arch.light.border};
+    --color-primary: ${arch.light.primary};
+    --color-primary-foreground: ${arch.light.primaryFg};
+  }
+
+  .dark {
+    --color-background: ${arch.dark.bg};
+    --color-foreground: ${arch.dark.fg};
+    --color-surface: ${arch.dark.surface};
+    --color-surface-elevated: ${arch.dark.surfaceElev};
+    --color-muted: ${arch.dark.muted};
+    --color-muted-foreground: ${arch.dark.mutedFg};
+    --color-border: ${arch.dark.border};
+    --color-primary: ${arch.dark.primary};
+    --color-primary-foreground: ${arch.dark.primaryFg};
+  }
+
+  @theme {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-surface: var(--color-surface);
+    --color-surface-elevated: var(--color-surface-elevated);
+    --color-muted: var(--color-muted);
+    --color-muted-foreground: var(--color-muted-foreground);
+    --color-border: var(--color-border);
+    --color-primary: var(--color-primary);
+    --color-primary-foreground: var(--color-primary-foreground);
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+</style>`;
+      }
+
+      openExportBtn.addEventListener('click', () => {
+        exportDrawer.classList.remove('hidden');
+      });
+      closeExportBtn.addEventListener('click', () => {
+        exportDrawer.classList.add('hidden');
+      });
+      copySnippetBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(snippetCode.textContent);
+        copySnippetBtn.textContent = 'Copied!';
+        setTimeout(() => copySnippetBtn.textContent = 'Copy to Clipboard', 2000);
+      });
+
+      // Init
+      updateThemeIcons();
+      applyArchetype('opencode-data');
+    </script>
+  </body>
+</html>
