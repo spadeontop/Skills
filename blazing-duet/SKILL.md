@@ -1,5 +1,5 @@
 ---
-name: design-context-generator
+name: blazing-duet
 description: >-
   Interactively co-design and generate a high-density, semantic Tailwind-powered DESIGN_CONTEXT.md and zero-dependency live visual preview (design-preview.html). Supercharged with the OpenCode Data (opencode.ai/data) Technical Monospace telemetry engine, 6 distinct archetypes, strict 60-30-10 distribution, mathematical WCAG 2.1 AA/AAA verification, and native Tailwind CSS v4 Browser CDN (@tailwindcss/browser@4) architecture.
 ---
@@ -11,6 +11,7 @@ A next-generation system skill to interactively architect, visually test, and ge
 Directly incorporates the **OpenCode Data** (`opencode.ai/data`) technical monospace telemetry design system extracted via browser devtools MCP analysis, featuring **IBM Plex Mono** typography, obsidian charcoal canvas (`#161616`), hairline 0.5px precision borders, live status tickers, leaderboard ranking cards, and high-density data tables.
 
 Strictly enforces:
+
 1. **The 60-30-10 Color Rule** + functional feedback states.
 2. **Mathematical WCAG 2.1 AA/AAA Accessibility** (minimum 4.5:1 for body copy, 3.0:1 for borders/controls, 7.0:1 for enhanced text).
 3. **Tailwind CSS v4 Browser CDN Architecture** (`@tailwindcss/browser@4`) with `@theme` and `@custom-variant dark`.
@@ -47,6 +48,7 @@ Strictly enforces:
 ## Modular References & Templates
 
 This skill contains deep-dive modular references and production templates:
+
 - [opencode-data-spec.md](./references/opencode-data-spec.md): Complete specification of the OpenCode Data design system (IBM Plex Mono, obsidian canvas, hairline borders, telemetry ticker, leaderboard cards, data tables, sparklines).
 - [archetypes.md](./references/archetypes.md): Curated presets:
   1. **OpenCode Data** (Technical Monospace Engine from `opencode.ai/data`)
@@ -68,6 +70,7 @@ This skill contains deep-dive modular references and production templates:
 ## Procedural Workflow (5 Phases)
 
 ### Phase 1: Intake & Discovery
+
 1. Check if the user specified:
    - Target archetype (Default: **OpenCode Data** or **Linear / SaaS Dark**).
    - Desired brand/accent color (or offer curated seed accents: OpenCode Indigo `#8190ff`, Cobalt `#3b5cf6`, Electric Violet `#8b5cf6`, Emerald `#10b981`).
@@ -76,6 +79,7 @@ This skill contains deep-dive modular references and production templates:
 2. If unspecified, use `ask_question` to clarify preferences interactively.
 
 ### Phase 2: Semantic Harmonization & OpenCode Data Mapping
+
 1. Map selected colors to the strict **60-30-10 distribution** + functional states:
    - **60% Dominant**: `bg-background`, `bg-surface`, `text-foreground`.
    - **30% Secondary**: `bg-surface-elevated`, `bg-muted`, `text-muted-foreground`, `border-border`, `border-border-subtle`.
@@ -86,6 +90,7 @@ This skill contains deep-dive modular references and production templates:
    - If **Linear / SaaS Dark**: Apply `Inter` or `Geist Sans` with `JetBrains Mono` for tabular metrics.
 
 ### Phase 3: Mathematical WCAG Contrast Validation
+
 1. Calculate contrast ratios for every foreground/background pair using the relative luminance formula in [wcag-contrast-rules.md](./references/wcag-contrast-rules.md).
 2. Ensure:
    - Dark mode body text on `#161616` achieves **> 15:1** (AAA).
@@ -95,6 +100,7 @@ This skill contains deep-dive modular references and production templates:
 3. Present the proposed palette table to the user with exact hex codes and contrast ratios.
 
 ### Phase 4: Standalone Live Visual Preview (`design-preview.html`)
+
 1. Generate `design-preview.html` in the project root by populating [preview.template.html](./templates/preview.template.html) with resolved tokens.
 2. Inform the user that `design-preview.html` is ready to open in their browser to test:
    - Live OpenCode Data leaderboard cards, telemetry status ticker, and high-density data tables.
@@ -104,7 +110,9 @@ This skill contains deep-dive modular references and production templates:
 3. Solicit user feedback or approval.
 
 ### Phase 5: Production `DESIGN_CONTEXT.md` & Config Export
+
 Upon user approval:
+
 1. Write the finalized `DESIGN_CONTEXT.md` in the project root using [DESIGN_CONTEXT.template.md](./templates/DESIGN_CONTEXT.template.md).
 2. Provide exportable configuration snippet for the user's stack (Tailwind v4 CDN `<head>` or `tailwind.config.js`).
 3. Keep `design-preview.html` as the living visual test bench for future iterations.
